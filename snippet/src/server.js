@@ -1,10 +1,13 @@
 import http from "http";
 import app from "./app.js";
-const PORT = process.env.PORT
+import connectDB from "./db/db.js";
 
-const server = http.createServer()
+const PORT = process.env.PORT || 5000;
+
+connectDB();
+
+const server = http.createServer(app);
 
 server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
-  
