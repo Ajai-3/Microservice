@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toast } from 'react-toastify'
 
 const CreateSnippet = () => {
     const [snippet, setSnippet] = useState({
@@ -8,6 +9,17 @@ const CreateSnippet = () => {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
+
+        if(snippet.title === '' || snippet.code === '') {
+          return toast.error('Please fill all the fields');
+        } else if (snippet.title.length < 3) {
+          return  toast.error('Title must be at least 3 characters');
+        } else if (snippet.code.length < 10) {
+          return  toast.error('Code must be at least 10 characters');
+        } 
+  
+        return toast.success("Snippet created successfully");
+
     }
 
   return (
@@ -32,7 +44,7 @@ const CreateSnippet = () => {
             placeholder='Write code snippet'
           ></textarea>
           <button
-            className='rounded-md p-2 bg-green-500 text-white hover:bg-green-600 transition'
+            className='rounded-md p-2 bg-green-500 text-white hover:bg-green-600 transition cursor-pointer'
             type="submit"
           >
             Create
