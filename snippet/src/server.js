@@ -1,0 +1,10 @@
+import http from "http";
+import app from "./app.js";
+const PORT = process.env.PORT
+
+const server = http.createServer()
+
+server.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+  
