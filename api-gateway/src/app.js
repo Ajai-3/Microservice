@@ -42,21 +42,8 @@ app.use('/api/comments', createProxyMiddleware({
 }));
 
 app.use('/api/snippets', createProxyMiddleware({
-    target: process.env.CODE_SERVICE_URL,
-    changeOrigin: true,
-    timeout: 30000,
-    proxyTimeout: 30000,
-    onError: (err, req, res) => {
-        console.error('❌ Code Service Proxy Error:', err.message);
-        console.error('Target:', process.env.CODE_SERVICE_URL);
-        res.status(503).json({
-            error: 'Code service unavailable',
-            message: err.message
-        });
-    },
-    onProxyReq: (proxyReq, req, res) => {
-        console.log('📤 Proxying to Code Service:', req.url);
-    }
+  target: process.env.CODE_SERVICE_URL,
+  changeOrigin: true
 }));
 
 const PORT = process.env.PORT || 3000;
