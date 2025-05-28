@@ -1,7 +1,13 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import commentRoutes from './routes/comment.route.js';
+import connectDB from './db/db.js';
+
+dotenv.config();
+
+// Connect to MongoDB
+connectDB();
 
 const app = express();
 
@@ -9,13 +15,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    service: 'Comment Service',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Routes
-app.use('/api/comments', require('./routes/comments'));
+app.use('/api/comments', commentRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -23,4 +33,4 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something broke!');
 });
 
-module.exports = app;
+export default app;

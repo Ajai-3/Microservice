@@ -1,8 +1,40 @@
-version: '3.8'
-
 services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+  code-service:
+    build: ./code-service
+    container_name: code-service
+    ports:
+      - "4002:4002"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/code
+      - PORT=4002
+    restart: unless-stopped
+
+  comment-service:
+    build: ./comment-service
+    container_name: comment-service
+    ports:
+      - "4001:4001"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URI=mongodb://localhost:27017/comments
+      - PORT=4001
+    restart: unless-stopped
+
   api-gateway:
     build: ./api-gateway
+    container_name: api-gateway
     ports:
       - "3000:3000"
     depends_on:
@@ -10,37 +42,21 @@ services:
       - code-service
     environment:
       - PORT=3000
-      - COMMENT_SERVICE_URL=http://comment-service:4001
-      - CODE_SERVICE_URL=http://code-service:4002
+      - COMMENT_SERVICE_URL=http://localhost:4001
+      - CODE_SERVICE_URL=http://localhost:4002
       - ALLOWED_ORIGINS=http://localhost:5173
-
-  comment-service:
-    build: ./comment-service
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/comments
-      - PORT=4001
-
-  code-service:
-    build: ./code-service
-    environment:
-      - MONGO_URI=mongodb://mongo:27017/code
-      - PORT=4002
+    restart: unless-stopped
 
   client:
     build: ./client
+    container_name: client
     ports:
       - "5173:5173"
     environment:
       - VITE_API_URL=http://localhost:3000
     depends_on:
       - api-gateway
-
-  mongo:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongodb_data:/data/db
+    restart: unless-stopped
 
 volumes:
   mongodb_data:

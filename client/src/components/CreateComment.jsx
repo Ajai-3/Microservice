@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 const CreateComment = ({ snippetId }) => {
   const [comment, setComment] = useState({});
   const [showButton, setShowButton] = useState(false);
-  
 
   const handleComment = (id, value) => {
     setComment((prev) => ({ ...prev, [id]: value }));
@@ -22,10 +21,11 @@ const CreateComment = ({ snippetId }) => {
     }
 
     try {
-      const res = await axios.post(
-        `http://localhost:5001/snippet/${id}/comment`,
-        { comment: comment[id] }
-      );
+      const res = await axios.post(`/api/comments/${id}`, {
+        comment: comment[id],
+      });
+
+      console.log("Create comment response:", res.data);
 
       if (res.data.success) {
         console.log(res.data.comments);

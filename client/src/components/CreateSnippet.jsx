@@ -14,8 +14,9 @@ const CreateSnippet = () => {
   useEffect(() => {
     const fetchSnippets = async () => {
       try {
-        const res = await axios.get("http://localhost:4002/api/snippet/");
-        setSnippets(res.data.snippets);
+        const res = await axios.get("/api/snippets/");
+        console.log("Fetched snippets:", res.data);
+        setSnippets(res.data.snippets || []);
       } catch (error) {
         console.error("Error fetching snippets:", error);
         toast.error("Failed to fetch snippets");
@@ -37,10 +38,12 @@ const CreateSnippet = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:4002/api/snippet/create", {
+      const res = await axios.post("/api/snippets/create", {
         title,
         code,
       });
+
+      console.log("Create snippet response:", res.data);
 
       if (res.data.success) {
         setCode("");
@@ -58,11 +61,11 @@ const CreateSnippet = () => {
 
   const getComments = async (id) => {
     try {
-      const res = await axios.get(
-        `http://localhost:4001/api/snippet/${id}/comment`
-      );
-      setShowComments(res.data.comments);
+      const res = await axios.get(`/api/comments/${id}`);
+      console.log("Fetched comments:", res.data);
+      setShowComments(res.data.comments || []);
     } catch (error) {
+      console.error("Error fetching comments:", error);
       toast.error("Failed to fetch comments");
     }
   };

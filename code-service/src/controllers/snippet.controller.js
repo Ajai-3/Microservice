@@ -5,7 +5,7 @@ import Snippet from "../models/snippet.model.js";
 //=======================================================================================================================
 // This controller is used to handle all the requests related to snippet, the title and code
 //=======================================================================================================================
-export const createSnipet = async (req, res) => {
+export const createSnippet = async (req, res) => {
     try {
         const { title, code } = req.body;
         console.log("Received data:", { title, code });
@@ -23,13 +23,15 @@ export const createSnipet = async (req, res) => {
             success: true,
             message: "Snippet created successfully",
             snippet: {
-                id: savedSnippet._id,
+                _id: savedSnippet._id,
                 title: savedSnippet.title,
-                code: savedSnippet.code
+                code: savedSnippet.code,
+                createdAt: savedSnippet.createdAt,
+                updatedAt: savedSnippet.updatedAt
             }
         });
     } catch (error) {
-        console.error("Error in createSnipet:", error);
+        console.error("Error in createSnippet:", error);
         return res.status(500).json({ success: false, message: "Server error: " + error.message });
     }
 };
