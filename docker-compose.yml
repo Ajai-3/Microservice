@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - comment-service
+      - code-service
+    environment:
+      - PORT=3000
+      - COMMENT_SERVICE_URL=http://comment-service:4001
+      - CODE_SERVICE_URL=http://code-service:4002
+      - ALLOWED_ORIGINS=http://localhost:5173
+
+  comment-service:
+    build: ./comment-service
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/comments
+      - PORT=4001
+
+  code-service:
+    build: ./code-service
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/code
+      - PORT=4002
+
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    depends_on:
+      - api-gateway
+
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+
+volumes:
+  mongodb_data:

@@ -5,13 +5,12 @@ import Home from './pages/Home'
 
 const App = () => {
   return (
-    <>
-    <ToastContainer theme='dark'/>
-    <Routes>
-      <Route path="/" element={<Home />}/>
-    </Routes>
-    </>
+    <div>
+      <ToastContainer theme='dark' />
+      <Routes>
+        <Route path="/" element={<Home />} />
+      </Routes>
+    </div>
   )
 }
-
 export default App
