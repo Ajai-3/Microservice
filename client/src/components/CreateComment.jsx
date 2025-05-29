@@ -21,7 +21,7 @@ const CreateComment = ({ snippetId }) => {
     }
 
     try {
-      const res = await axios.post(`http://localhost:4001/api/comments/${id}`, {
+      const res = await axios.post(`/api/comments/${id}`, {
         comment: comment[id],
       });
 

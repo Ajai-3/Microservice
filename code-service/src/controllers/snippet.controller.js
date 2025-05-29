@@ -7,17 +7,22 @@ import Snippet from "../models/snippet.model.js";
 //=======================================================================================================================
 export const createSnippet = async (req, res) => {
     try {
+        console.log("📝 CREATE SNIPPET REQUEST");
+        console.log("Request body:", req.body);
+
         const { title, code } = req.body;
-        console.log("Received data:", { title, code });
 
         if (!title || !code) {
+            console.log("❌ Missing title or code");
             return res.status(400).json({ success: false, message: "Title and code are required" });
         }
 
-
+        console.log("✅ Creating snippet with:", { title, code });
         const newSnippet = new Snippet({ title, code });
-        const savedSnippet = await newSnippet.save();
 
+        console.log("💾 Saving to database...");
+        const savedSnippet = await newSnippet.save();
+        console.log("✅ Snippet saved successfully:", savedSnippet._id);
 
         return res.status(201).json({
             success: true,
@@ -31,7 +36,8 @@ export const createSnippet = async (req, res) => {
             }
         });
     } catch (error) {
-        console.error("Error in createSnippet:", error);
+        console.error("❌ ERROR in createSnippet:", error.message);
+        console.error("Full error:", error);
         return res.status(500).json({ success: false, message: "Server error: " + error.message });
     }
 };

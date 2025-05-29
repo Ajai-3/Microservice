@@ -14,7 +14,7 @@ const CreateSnippet = () => {
   useEffect(() => {
     const fetchSnippets = async () => {
       try {
-        const res = await axios.get("http://localhost:4002/api/snippets/");
+        const res = await axios.get("/api/snippets/");
         console.log("Fetched snippets:", res.data);
         setSnippets(res.data.snippets || []);
       } catch (error) {
@@ -38,7 +38,7 @@ const CreateSnippet = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:4002/api/snippets/create", {
+      const res = await axios.post("/api/snippets/create", {
         title,
         code,
       });
@@ -61,7 +61,7 @@ const CreateSnippet = () => {
 
   const getComments = async (id) => {
     try {
-      const res = await axios.get(`http://localhost:4001/api/comments/${id}`);
+      const res = await axios.get(`/api/comments/${id}`);
       console.log("Fetched comments:", res.data);
       setShowComments(res.data.comments || []);
     } catch (error) {

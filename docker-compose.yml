@@ -6,6 +6,8 @@ services:
       - "27017:27017"
     volumes:
       - mongodb_data:/data/db
+    networks:
+      - microservice-network
     restart: unless-stopped
 
   code-service:
@@ -16,8 +18,10 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://localhost:27017/code
+      - MONGO_URI=mongodb://mongo:27017/code
       - PORT=4002
+    networks:
+      - microservice-network
     restart: unless-stopped
 
   comment-service:
@@ -28,8 +32,10 @@ services:
     depends_on:
       - mongo
     environment:
-      - MONGO_URI=mongodb://localhost:27017/comments
+      - MONGO_URI=mongodb://mongo:27017/comments
       - PORT=4001
+    networks:
+      - microservice-network
     restart: unless-stopped
 
   api-gateway:
@@ -38,13 +44,15 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - comment-service
       - code-service
+      - comment-service
     environment:
       - PORT=3000
-      - COMMENT_SERVICE_URL=http://localhost:4001
-      - CODE_SERVICE_URL=http://localhost:4002
+      - COMMENT_SERVICE_URL=http://comment-service:4001
+      - CODE_SERVICE_URL=http://code-service:4002
       - ALLOWED_ORIGINS=http://localhost:5173
+    networks:
+      - microservice-network
     restart: unless-stopped
 
   client:
@@ -52,11 +60,17 @@ services:
     container_name: client
     ports:
       - "5173:5173"
-    environment:
-      - VITE_API_URL=http://localhost:3000
     depends_on:
       - api-gateway
+    environment:
+      - VITE_API_URL=http://localhost:3000
+    networks:
+      - microservice-network
     restart: unless-stopped
+
+networks:
+  microservice-network:
+    driver: bridge
 
 volumes:
   mongodb_data:

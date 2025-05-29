@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+// Snippet model
 const snippetSchema = new mongoose.Schema({
     title: {
         type: String,
